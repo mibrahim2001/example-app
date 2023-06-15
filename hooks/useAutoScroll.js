@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 
 const useAutoScroll = () => {
+  const [autoScroll, setAutoScroll] = useState(false);
   const [currentPosition, setCurrentPosition] = useState(0);
   const [isScrolling, setIsScrolling] = useState(false);
   const [momentumScrolling, setMomentumScrolling] = useState(false);
@@ -12,31 +13,35 @@ const useAutoScroll = () => {
   const activeInterval = useRef();
   const scrollSpeed = useRef(1);
 
+  useEffect(() => {
+    return () => {
+      clearScrolling();
+    };
+  }, []);
+
   const setRefForAutoScroll = (ref) => {
     setFlatListRef(ref);
   };
 
-  // const startScroll = () => {
-  //   console.log("start scroll triggered");
-  //   activeInterval.current = setInterval(() => {
-  //     try {
-  //       setCurrentPosition((prevPosition) => {
-  //         const newPosition = prevPosition + scrollSpeed.current;
-  //         if (flatListRef.current) {
-  //           flatListRef.current.scrollToOffset({
-  //             offset: newPosition,
-  //             animated: false,
-  //           });
-  //         }
+  const toggleAutoScroll = () => {
+    setAutoScroll(!autoScroll);
+  };
 
-  //         return newPosition;
-  //       });
-  //     } catch (error) {
-  //       console.log("error in start scroll", error);
-  //       clearScrolling();
-  //     }
-  //   }, 30);
-  // };
+  useEffect(() => {
+    return () => {
+      clearScrolling();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (autoScroll) {
+      setIsAutoScroll(true);
+      startScroll(3);
+    } else {
+      setIsAutoScroll(false);
+      clearScrolling();
+    }
+  }, [autoScroll]);
 
   const startScroll = () => {
     // console.log("start scroll triggered");
@@ -80,31 +85,20 @@ const useAutoScroll = () => {
   };
 
   const increaseAutoScrollSpeed = () => {
+    console.log("Increase autoscroll speed called");
     if (scrollSpeed.current < 3.25) {
       scrollSpeed.current = scrollSpeed.current + 0.25;
-      // console.log("scroll speed", scrollSpeed.current);
+      console.log("scroll speed", scrollSpeed.current);
     }
   };
 
   const decreaseAutoScrollSpeed = () => {
+    console.log("Decrease autoscroll speed called");
     if (scrollSpeed.current > 0.25) {
       scrollSpeed.current = scrollSpeed.current - 0.25;
-      // console.log("scroll speed", scrollSpeed.current);
+      console.log("scroll speed", scrollSpeed.current);
     }
   };
-
-  // useEffect(() => {
-  //   if (flatListRef) {
-  //     console.log(flatListRef.current);
-  //     setCurrentPosition(flatListRef.current?.contentOffset.y);
-  //   }
-  // }, [flatListRef]);
-
-  useEffect(() => {
-    return () => {
-      clearScrolling();
-    };
-  }, []);
 
   const onMomentumScrollBegin = () => {
     // console.log("omsb");
@@ -143,12 +137,11 @@ const useAutoScroll = () => {
 
     if (currentOffset > previousOffset.current) {
       if (!isScrollingUp) {
-        console.log("Scrolling Up");
         setIsScrollingUp(true);
       }
     } else {
       if (isScrollingUp) {
-        console.log("Scrolling Down");
+        // console.log("Scrolling Down");
         setIsScrollingUp(false);
       }
     }
@@ -178,6 +171,7 @@ const useAutoScroll = () => {
   };
 
   return {
+    autoScroll,
     currentPosition,
     startScroll,
     clearScrolling,
@@ -195,6 +189,7 @@ const useAutoScroll = () => {
     onScroll,
     isScrollingUp,
     setIsScrollingUp,
+    toggleAutoScroll,
   };
 };
 

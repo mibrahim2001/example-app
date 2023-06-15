@@ -1,20 +1,25 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StatusBar } from "expo-status-bar";
+import { StyleSheet, Text, View, Dimensions, SafeAreaView } from "react-native";
+import AutoScrollFlatlist from "./components/AutoScrollFlatlist";
 
+const { width, height } = Dimensions.get("window");
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <SafeAreaView style={styles.container}>
+      <Text style={{ marginTop: 20, fontWeight: "bold", fontSize: 20 }}>
+        Auto Scroll Flatlist Demo
+      </Text>
+      <AutoScrollFlatlist />
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+    width: width,
   },
 });
